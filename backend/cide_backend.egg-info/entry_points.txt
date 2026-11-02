@@ -1,0 +1,2 @@
+[console_scripts]
+cide-backend = app.main:run
