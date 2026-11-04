@@ -26,110 +26,57 @@ Every coding agent must:
 
 ## 3. Core System Architecture
 
-The project is expected to contain these major systems:
+The project contains these major systems:
 
 ### A. Host AI
-Responsible for:
-- Understanding user requests.
-- Breaking tasks into smaller subtasks.
-- Planning execution workflows.
-- Assigning tasks to agents.
-- Monitoring execution.
-- Evaluating agent outputs.
-- Producing the final response.
+
+Responsible for understanding user requests, breaking tasks into smaller subtasks, planning execution workflows, assigning tasks to agents, monitoring execution, evaluating agent outputs, and producing the final response.
+
+Host planning is owned by SatDev. The backend stores an explicit workflow. It does not invent one.
 
 ### B. Agent Manager
-Responsible for:
-- Agent registration.
-- Agent capability discovery.
-- Task assignment.
-- Execution lifecycle management.
-- Agent communication.
-- Status and progress reporting.
+
+Responsible for agent registration, capability discovery, task assignment, execution lifecycle management, agent communication, and status and progress reporting.
 
 ### C. AI Integrations
-Responsible for:
-- Connecting supported AI providers.
-- Integrating installed coding agents.
-- Managing provider-specific communication.
-- Handling failures and timeouts.
-- Supporting browser-based AI interactions.
+
+Responsible for connecting supported AI providers, integrating installed coding agents, managing provider-specific communication, and handling failures and timeouts.
 
 ### D. Browser AI Connector
-Responsible for:
-- Opening supported AI websites in the user's browser.
-- Managing browser sessions safely.
-- Sending user-authorized prompts.
-- Collecting responses where technically supported.
-- Handling authentication and session errors.
 
-Never attempt to bypass authentication, access controls, CAPTCHAs or website security restrictions.
+Responsible for recording user-authorized prompts for supported AI websites and accepting a result the user submits. It must never bypass authentication, access controls, CAPTCHAs, or website security restrictions, and the backend does not open those sites.
 
 ### E. Monitoring Dashboard
-Responsible for:
-- Agent status.
-- Task progress.
-- Execution history.
-- Individual agent results.
-- Errors and warnings.
-- Overall workflow visibility.
+
+The backend exposes task, agent, event, and result reads. The dashboard UI is a separate frontend.
 
 ### F. Voice System
-Responsible for:
-- Voice-to-text.
-- Text-to-voice.
-- Microphone permissions.
-- Voice interaction with the Host AI.
+
+Voice is not implemented in this backend. Text task creation is the supported input.
 
 ## 4. Team Ownership
 
-### SatDev — Project Lead & AI Architect
-Primary ownership:
-- Overall architecture.
-- Host AI design.
-- Orchestration logic.
-- Cross-module integration.
-- Technical decisions.
+SatDev — Project Lead and AI Architect. Owns architecture, Host AI design, orchestration logic, cross-module integration, and technical decisions.
 
-### MonkeyGod_666 — Full-Stack Developer & Backend Lead
-Primary ownership:
-- Backend architecture.
-- APIs.
-- Database.
-- Authentication.
-- Backend infrastructure.
-- Backend integration reviews.
+MonkeyGod_666 — Full-Stack Developer and Backend Lead. Owns backend architecture, APIs, storage, authentication, backend infrastructure, and backend integration reviews.
 
-### Programmer Also Artist — Backend Developer
-Primary ownership:
-- Assigned backend modules.
-- Agent execution services.
-- API integrations.
-- Database operations.
-- Error handling and logging.
+Programmer Also Artist — Backend Developer. Owns assigned backend modules, agent execution services, API integrations, storage operations, and error handling.
 
-Other team members must follow their assigned module ownership.
+Other team members must follow their assigned module ownership. Richer executors plug into `backend/app/services/execution.py` without rewriting the routes.
 
 ## 5. Git Collaboration Rules
 
-- Never push directly to `main`.
+- Never push directly to main.
 - Use feature branches.
-- Use `dev` as the integration branch.
-- Submit Pull Requests before merging.
+- Use dev as the integration branch.
+- Submit pull requests before merging.
 - Do not force-push shared branches.
 - Pull the latest changes before beginning work.
 - Avoid editing files owned by other developers without coordination.
 - Resolve merge conflicts carefully.
-- Never commit secrets or credentials.
+- Never commit secrets, credentials, `.env`, or the `backend/data` directory.
 
-Suggested branch names:
-
-- `feature/host-ai`
-- `feature/frontend`
-- `feature/backend`
-- `feature/ai-integrations`
-- `feature/voice`
-- `fix/bug-description`
+Suggested branch names: `feature/host-ai`, `feature/frontend`, `feature/backend`, `feature/ai-integrations`, `feature/voice`, `fix/bug-description`.
 
 ## 6. Security Requirements
 
@@ -146,61 +93,26 @@ Security is mandatory.
 - Avoid arbitrary command execution.
 - Log important actions without recording secrets.
 - Treat AI-generated output and browser content as untrusted input.
-
-AI agents must never read, print, copy or expose `.env` contents.
+- AI agents must never read, print, copy, or expose `.env` contents.
+- The JSON data files are encrypted. Do not add a code path that writes plaintext copies.
 
 ## 7. Coding Rules
 
-Before modifying code:
+Before modifying code, inspect the relevant files, understand existing dependencies, identify side effects, and check whether another module depends on the code.
 
-1. Inspect the relevant files.
-2. Understand existing dependencies.
-3. Identify possible side effects.
-4. Check whether another module depends on the code.
+When implementing, keep changes focused, follow existing naming conventions, add error handling, add or update tests, and update documentation when the API contract changes.
 
-When implementing:
-
-1. Keep changes focused.
-2. Follow existing naming conventions.
-3. Add appropriate error handling.
-4. Add or update tests.
-5. Update documentation when necessary.
-
-Do not:
-- Rewrite entire modules without justification.
-- Remove existing functionality without approval.
-- Add fake API responses as real integrations.
-- Hardcode credentials.
-- Claim tests passed without executing them.
+Do not rewrite entire modules without justification, remove existing functionality without approval, add fake API responses as real integrations, hardcode credentials, or claim tests passed without executing them.
 
 ## 8. Testing Requirements
 
-Before submitting changes:
+Before submitting changes, run the relevant tests, check broken imports, validate API responses, check error handling, and test integration boundaries. Report untested functionality honestly.
 
-- Run relevant tests.
-- Check for broken imports.
-- Validate API responses.
-- Check error handling.
-- Test integration boundaries.
-- Report untested functionality honestly.
-
-Every Pull Request should explain:
-- What changed.
-- Why it changed.
-- Files modified.
-- Tests performed.
-- Known limitations.
+Every pull request should explain what changed, why it changed, which files were modified, which tests were performed, and known limitations.
 
 ## 9. Communication Between Agents
 
-When multiple agents work simultaneously:
-
-- Respect module ownership.
-- Agree on API contracts before integration.
-- Avoid modifying shared files simultaneously.
-- Communicate interface changes.
-- Do not assume another agent's implementation is complete.
-- Review outputs before integrating them.
+When multiple agents work simultaneously, respect module ownership, agree on API contracts before integration, avoid modifying shared files simultaneously, communicate interface changes, do not assume another agent's implementation is complete, and review outputs before integrating them.
 
 ## 10. Important Instructions
 
@@ -214,4 +126,4 @@ Never make architectural decisions that conflict with the project's established 
 
 The objective is to build CIDE as a secure, modular, reliable multi-AI orchestration platform.
 
-**Build carefully. Integrate properly. Test everything.**
+Build carefully. Integrate properly. Test everything.
